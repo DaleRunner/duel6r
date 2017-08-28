@@ -34,4 +34,4 @@ deploy:
   file: "build/duel6r"
   on:
     tags: true
-    all_branches: true
+  skip_cleanup: true
