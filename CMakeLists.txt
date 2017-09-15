@@ -390,8 +390,5 @@ endif(D6R_WITH_GLEW)
 ########################
 
 # install binary files
-install(TARGETS ${D6R_APP_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-#install(DIRECTORY resources/data DESTINATION data)
-#install(DIRECTORY resources/levels DESTINATION levels)
-#install(DIRECTORY resources/sound DESTINATION sound)
-#install(DIRECTORY resources/textures DESTINATION textures)
+install(TARGETS ${D6R_APP_NAME} RUNTIME DESTINATION ${D6R_APP_NAME})
+install(DIRECTORY resources DESTINATION ${D6R_APP_NAME})
