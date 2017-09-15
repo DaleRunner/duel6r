@@ -12,6 +12,24 @@ cmake_minimum_required(VERSION 3.2)
 project(Duel6r)
 
 #########################################################################
+# Platform detection
+#########################################################################
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+	EXEC_PROGRAM(cat ARGS "/proc/cpuinfo" OUTPUT_VARIABLE CPUINFO)
+
+	STRING(REGEX REPLACE "^.*(arm).*$" "\\1" ARM_THERE ${CPUINFO})
+	STRING(COMPARE EQUAL "arm" "${ARM_THERE}" ARM_TRUE)
+	if(ARM_TRUE)
+		set(D6R_PLATFORM "arm")
+	else(ARM_TRUE)
+		set(D6R_PLATFORM "x86")
+	endif(ARM_TRUE)
+else(CMAKE_SYSTEM_NAME MATCHES "Linux")
+	set(D6R_PLATFORM "x86")
+endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+
+#########################################################################
 # Compiler flags
 #########################################################################
 
@@ -23,7 +41,14 @@ endif(MSVC)
 
 # gnu compiler or clang
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -mfpmath=sse -msse2 -std=c++14")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
+	if(D6R_PLATFORM STREQUAL "x86")
+
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse2")
+	elseif(D6R_PLATFORM STREQUAL "arm")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfloat-abi=hard -mlittle-endian -munaligned-access")
+		#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcpu=cortex-a53  -mfpu=neon-fp-armv8")
+	endif(D6R_PLATFORM STREQUAL "x86")
 endif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 # MinGW
